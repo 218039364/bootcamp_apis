@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+
+  <body style="background-color: burlywood;">
+    <h1> Word widget</h1>
+    <hr>
+    <div
+      x-data="{
+        sentence:'',
+        longestWord: '',
+        shortestWord: '',
+        wordLength: '',
+        checkSentence(){
+            axios.get(`/api/word_game?sentence=${this.sentence}`)
+            .then((result)=>{
+                console.log(result.data);
+                this.longestWord = result.data.longestWord;
+                this.shortestWord = result.data.shortestWord;
+                this.wordLength = result.data.sum;
+
+                console.log(this.wordLength)
+            });
+        }
+    }"
+    >
+      <textarea x-model="sentence" cols="30" rows="5"></textarea>
+
+      <div>
+        <button x-on:click="checkSentence">check word</button>
+      </div>
+
+      <div>
+        <div>Longest word: <span x-text="longestWord"></span></div>
+        <div>shortest word: <span x-text="shortestWord"></span></div>
+        <div>wordLength: <span x-text="wordLength"></span></div>
+      </div>
+    </div>
+
+    <hr>
+    <br>
+
+    <div class="widget">
+      <h2>Telephone Bill</h2>
+      <hr>
+      <p>
+        
+        Print total phoneBill amount:
+      </p>
+      <div
+        x-data="{
+                phoneBill: '',
+                bill: '',
+                total: '',
+                callPrice: 0,
+                smsPrice: 0,
+                items: '',
+                
+                fetchPrices() {
+                    axios.get(`/api/phonebill/prices`)
+                        .then(response => {
+                            console.log(response.data);
+                            this.callPrice = response.data.call;
+                            this.smsPrice = response.data.sms;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                        
+                    },
+                        updatePrices() {
+                            axios.post(`/api/phonebill/price`, {
+                                type: 'call',
+                                price: this.callPrice
+                            })
+                            .then(response => {
+                                console.log(response.data);
+                                alert(`Call price updated to R ${this.callPrice}`);
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                        
+                            axios.post(`/api/phonebill/price`, {
+                                type: 'sms',
+                                price: this.smsPrice
+                            })
+                            .then(response => {
+                                console.log(response.data);
+                                alert(`SMS price updated to R ${this.smsPrice}`);
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                        },
+                        checkBill() {
+                            axios.post(`/api/phonebill/total`, {bill: this.phoneBill})
+                                .then(response => {
+                                    console.log(response.data);
+                                    this.total = response.data.total;
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                });
+                        }
+                    }"
+      >
+        <div class="input">
+          <label for="noItems">Telephone bill Items:</label>
+          <textarea type="text" name="noItems" id="bill" class="bill" x-model="phoneBill"  ></textarea> 
+        </div>
+        <!-- <div
+          class="message"
+          x-text="itemMessage"
+        ></div> -->
+        <button x-on:click="checkBill">Find Items</button>
+      </div>
+
+      <br>
+      <br>
+        <div x-data="{
+            usage: '',
+            available: '',
+            result: '',
+            calculateAirtime() {
+                axios.post('/api/enough', {
+                    usage: this.usage,
+                    available: this.available
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.result = response.data.result;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }
+
+        }">
+
+        <hr>
+            <section >
+                <h1>Enough Airtime Widget</h1>
+            </section>
+            <hr />
+            <form>
+                <label for="usage">Usage Projection:</label>
+                <div >
+                    <input x-model="usage" type="text"  id="usage">
+                </div>
+                <label for="available">Total Available Airtime:</label>
+                <div>
+                    <input x-model="available" type="number"  id="available">
+                </div>
+                <button x-on:click="calculateAirtime()">Calculate</button>
+            </form>
+            <div x-show="result">
+                <label>Result: <b><span x-text="result"></span></b></label>
+            </div>
+        </div>
+    </section>
+
+    </div>
+  </body>
+</html>

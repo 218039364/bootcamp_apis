@@ -1,0 +1,1 @@
+get http://localhost:6007/api/phonebill/total?bill='call,sms,sms'
