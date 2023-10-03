@@ -3,7 +3,7 @@
 import longestWord from './bootcamp/longestWord.js';
 import shortestWord from './bootcamp/shortestWord.js'
 import wordLengths from './bootcamp/wordLengths.js'
-import totalPhoneBill from './bootcamp/phonebill.js';
+import totalPhoneBill from './bootcamp/phoneBill.js';
 import enoughAirtime from './bootcamp/enoughAirtime.js';
 
 import express from 'express';
